@@ -17,7 +17,7 @@ $get_msg = msg_get();
       <p id="alertcontent"></p>
       <div id="borderanimate"></div>
   </div>
-  <script src="<?= script_asset('/alert.js') ?>"></script>
+  <script src="<?= script_sls('/alert.js') ?>"></script>
   <?php if ($get_msg !== ''): ?>
   <script>
     document.addEventListener("DOMContentLoaded", function() {
