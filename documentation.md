@@ -1,0 +1,2 @@
+# Wip docs
+Welcome to the still a work in progress documentation of the Tesserarius, for detail about the **[QED](https://github.com/Qwidio/QED)** used as the baseline of this project please refer to **[QED Documentation](https://github.com/Qwidio/QED/blob/main/documentation.md)**

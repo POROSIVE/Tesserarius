@@ -1,0 +1,12 @@
+# nodes
+node_modules/
+package-lock.json
+# keep it clean
+public/images/
+# Environment & Sensitive configs
+.env
+# OS / Editor junk
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

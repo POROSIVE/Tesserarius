@@ -1,0 +1,2 @@
+# Devlogs
+start of the devlogs, all the things done within the first two day of working on this was debugging and fixing the component routing issue and making simple landing page taken from other projects of mine.
