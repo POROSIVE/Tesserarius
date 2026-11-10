@@ -26,7 +26,7 @@ final class DB {
         $env['DB_HOST'] ?? 'localhost',
         $env['DB_USER'] ?? 'root',
         $env['DB_PASS'] ?? '',
-        $env['DB_NAME'] ?? 'qed',
+        $env['DB_NAME'] ?? 'tesserarius',
       );
       self::$conn->set_charset('utf8mb4');
       return self::$conn;
@@ -78,5 +78,38 @@ function components(string $name, array $props = []): void {
     extract($__props, EXTR_SKIP);
     require $__file;
   })($target, $props);
+}
+
+// the equivalent of alerter on cgcc
+function msg_set(string $message): void {
+  $_SESSION['temp_msg'] = $message;
+}
+function msg_get(): string {
+  $temp_msg = (string) ($_SESSION['temp_msg'] ?? '');
+  $_SESSION['temp_msg'] = '';
+  return $temp_msg;
+}
+
+// navigator & redirects, supposedly for cleaner and safer way of doing it instead of header+exit.
+function redir(string $path): never {
+  global $base_path;
+  if (str_starts_with($path, 'http://') || str_starts_with($path, 'https://')) {
+    header('Location: ' . $path);
+    exit;
+  }
+  $clean = '/' . ltrim($path, '/');
+  header('Location: ' . $path . $clean);
+  exit;
+} 
+
+function save_prev_loc(string $path): void {
+  $_SESSION['prev_loc'] = ltrim($path, '/');
+}
+function get_prev_loc(string $default = ''): string {
+  $loc = (string) ($_SESSION['prev_loc'] ?? $default);
+  if ($loc === '' || str_contains($loc, "\r") || str_contains($loc, "\n") || str_contains($loc, "://") || str_contains($loc, "..")) {
+    return $default;
+    }
+  return ltrim($loc, '/');
 }
 ?>

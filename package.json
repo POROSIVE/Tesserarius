@@ -2,9 +2,9 @@
   "devDependencies": {
     "tailwindcss": "^3.4.19"
   },
-  "name": "qed",
+  "name": "tesserarius",
   "version": "1.0.0",
-  "description": "why does it named like that? this is the name I come up when making the project",
+  "description": "",
   "main": "tailwind.config.js",
   "scripts": {
     "dev": "tailwindcss -i ./src/input.css -o ./global.css --watch",
@@ -12,12 +12,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Qwidio/QED.git"
+    "url": "git+https://github.com/POROSIVE/Tesserarius.git"
   },
   "keywords": [],
   "type": "commonjs",
   "bugs": {
-    "url": "https://github.com/Qwidio/QED/issues"
+    "url": "https://github.com/POROSIVE/Tesserarius/issues"
   },
-  "homepage": "https://github.com/Qwidio/QED#readme"
+  "homepage": "https://github.com/POROSIVE/Tesserarius#readme"
 }

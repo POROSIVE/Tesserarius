@@ -2,7 +2,7 @@
 node_modules/
 package-lock.json
 # keep it clean
-public/images/
+public/
 # Environment & Sensitive configs
 .env
 # OS / Editor junk
