@@ -1,6 +1,7 @@
 <?php
 declare(strict_types=1);
 $get_msg = msg_get();
+$body_class = $meta['body_class'] ?? 'w-full min-h-screen overflow-x-hidden';
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -10,7 +11,7 @@ $get_msg = msg_get();
   <link rel="stylesheet" href="<?= e($base_path) ?>/global.css">
   <title><?= e($meta['title'] ?? 'Tesserarius') ?></title>
 </head>
-<body class="w-full min-h-screen overflow-x-hidden">
+<body class="<?= e($body_class) ?>">
   <?= $children;?>
   <!-- look who's back, it's the good ol' but new alerter -->
   <div id="alertcard">
@@ -21,7 +22,7 @@ $get_msg = msg_get();
   <?php if ($get_msg !== ''): ?>
   <script>
     document.addEventListener("DOMContentLoaded", function() {
-      alerter(<?= json_encode($flashMsg, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP) ?>);
+      alerter(<?= json_encode($get_msg, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP) ?>);
     })
   </script>
   <?php endif;?>

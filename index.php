@@ -88,6 +88,7 @@ csrf_verify();
 // metadata
 $meta = [
    'title' => 'Tesserarius',
+   'body_class' => 'w-full min-h-screen overflow-x-hidden',
    'status' => 200 
   ];
 $params = $match['params'] ?? [];
