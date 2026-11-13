@@ -4,25 +4,29 @@
 
 @layer base {
   :root {
-    --background: #ffffff;
-    --foreground: #171717;
-    --nav: #fdfdfdce;
+    --text: #ffffff;
+    --background: #18181b;
+    --foreground: #e9e9e9;
+    --nav: #1b1b1bab;
     --surface: #27272a;
-    --borders: #52525b;
+    --borders: #7b7b7e;
     --muted: #a1a1aa;
     --accent: #60defa;
+    --bg-accent: #18a7d3;
     --background: linear-gradient(to bottom, rgb(23, 25, 26), rgb(44, 42, 51));
   }
 
   @media (prefers-color-scheme: dark) {
     [data-theme="dark"] {
-      --background: #18181b;
-      --foreground: #f4f4f5;
-      --nav: #1b1b1bab;
+      --text: #0c0c0c;
+      --background: #ffffff;
+      --foreground: #171717;
+      --nav: #fdfdfdce;
       --surface: #27272a;
-      --borders: #7b7b7e;
+      --borders: #52525b;
       --muted: #a1a1aa;
       --accent: #60defa;
+      --bg-accent: #18a7d3;
       --background: linear-gradient(to bottom, rgb(23, 25, 26), rgb(44, 42, 51));
     }
   }
@@ -73,6 +77,44 @@
     @apply absolute inset-0 w-full h-full text-transparent z-20;
   }
 
+  /* blur effects, taken from somewhere... */
+  .bg-blur::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    background: transparent;
+    backdrop-filter: blur(20px);
+    z-index: -1;
+  }
+  .blur-censor {
+    position: absolute;
+    inset: 0;
+    color: transparent;
+    background: transparent;
+    backdrop-filter: blur(15px);
+    z-index: 1;
+    transition: backdrop-filter 0.2s ease;
+  }
+  .blur-censor:hover {
+    backdrop-filter: blur(0);
+  }
+
+  
+  /* State of the art rewritten input classes from my other project */
+  .inptxt, .inpno, .inpselect {
+    @apply mt-[5px] p-[7px] rounded-lg text-[var(--text)] bg-[var(--background)];
+  }
+  .inpselect option {
+    color: var(--text);
+  }
+  .hiddeninp {
+    @apply size-0 text-transparent bg-transparent;
+    font-size: 0;
+    border: none;
+  }
+
   /* alerted that is not taken from anywhere at all... */
   #alertcard {
     position: fixed;
@@ -82,7 +124,7 @@
     width: max-content;
     height: max-content;
     max-width: 60%;
-    background: var(--accent);
+    background: var(--bg-accent);
     border-radius: 5px;
     display: flex;
     flex-direction: column;
@@ -114,7 +156,7 @@
     left: 0;
     height: 4px;
     width: 100%;
-    background: var(--accent);
+    background: var(--bg-accent);
     overflow: hidden;
   }
   #borderanimate::before {

@@ -13,3 +13,9 @@ the "auth_required" function will serve as single call check of whether or not u
 
 ## more flexible body class
 because on some page will be needing different styling and container types
+
+## created the login page, made mock profile page, and some other things 
+Everything made at the time of writing will probably change alot in the near future. It's better to test whether or not the password_verify is deciding to broke again like the other time it happened in the other projects, thankfully it does work though this auth system is still barren but it should be okay if the current version is already working.
+the profile page created just for testing the auth required function and nothing else, the database was still in planning at the time of writing and the project is still using empty database with one account table for this test.
+Added the nav button to profile page because it has become a hurdle going back and forth the page.
+I've taken some styling from the other project to here because I like it and don't want to restyle it again.

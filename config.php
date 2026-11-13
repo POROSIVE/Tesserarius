@@ -118,7 +118,7 @@ function auth_required(string $redirect = 'auth/login'): string {
   if (!empty($_SESSION['profile_tag'])) {
     return (string) $_SESSION['profile_tag'];
   }
-  $profile_tag = get_profile_tag();
+  $profile_tag = $_SESSION['profile_tag'];
   if ($profile_tag === null) {
     msg_set("login to access");
     redir_loc($redirect);

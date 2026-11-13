@@ -1,8 +1,10 @@
 <?php
 declare(strict_types=1);
 $activeSection = $active ?? '';
+$noNav = ["login","register"];
+if (!in_array($activeSection, $noNav)):
 ?>
-<div class="relative px-[15px] py-1 w-full flex items-center gap-3 bg-[#ffffff1f] z-50">
+<div class="relative px-[15px] py-1 w-full flex items-center gap-3 bg-[#ffffff04] bg-blur z-50">
   <div class="relative p-[10px] py-2 flex flex-col items-center justify-center rounded-[5px] hover:bg-white/15">
       <h2 class="text-xl text-center font-bold <?= $activeSection === 'home' ? 'text-[rgb(255,164,61)]' : 'text-white' ?>">TSR</h2>
       <a href="<?= e($base_path) ?>" class="link-cover">.</a>
@@ -13,8 +15,13 @@ $activeSection = $active ?? '';
         <a href="<?= e($base_path) ?>/library" class="link-cover">.</a>
     </div>
     <div class="relative px-[10px] py-2 flex flex-col items-center justify-center rounded-[5px] hover:bg-white/15">
+        <h2 class="text-lg text-center font-bold <?= $activeSection === 'profile' ? 'text-[rgb(255,164,61)]' : 'text-white' ?>">Profile</h2>
+        <a href="<?= e($base_path) ?>/profile" class="link-cover">.</a>
+    </div>
+    <div class="relative px-[10px] py-2 flex flex-col items-center justify-center rounded-[5px] hover:bg-white/15">
         <h2 class="text-lg text-center font-bold <?= $activeSection === 'docs' ? 'text-[rgb(255,164,61)]' : 'text-white' ?>">docs</h2>
         <a href="<?= e($base_path) ?>/docs" class="link-cover">.</a>
     </div>
   </div>
 </div>
+<?php endif;?>
