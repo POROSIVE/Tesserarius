@@ -20,7 +20,7 @@ final class DB {
       return self::$conn;
     }
     mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
-    $env = is_file(_DIR_ . '/.env') ? (parse_ini_file(_DIR_ . '/.env') ?: []) : [];
+    $env = is_file(__DIR__ . '/.env') ? (parse_ini_file(__DIR__ . '/.env') ?: []) : [];
     try {
       self::$conn = new \mysqli(
         $env['DB_HOST'] ?? 'localhost',
@@ -91,14 +91,14 @@ function msg_get(): string {
 }
 
 // navigator & redirects, supposedly for cleaner and safer way of doing it instead of header+exit.
-function redir(string $path): never {
+function redir_loc(string $path): never {
   global $base_path;
   if (str_starts_with($path, 'http://') || str_starts_with($path, 'https://')) {
     header('Location: ' . $path);
     exit;
   }
   $clean = '/' . ltrim($path, '/');
-  header('Location: ' . $path . $clean);
+  header('Location: ' . $base_path . $clean);
   exit;
 } 
 
@@ -112,4 +112,18 @@ function get_prev_loc(string $default = ''): string {
     }
   return ltrim($loc, '/');
 }
+
+// temporary for test, made for the page requiring authenticated visitor
+function auth_required(string $redirect = 'auth/login'): string {
+  if (!empty($_SESSION['profile_tag'])) {
+    return (string) $_SESSION['profile_tag'];
+  }
+  $profile_tag = get_profile_tag();
+  if ($profile_tag === null) {
+    msg_set("login to access");
+    redir_loc($redirect);
+  }
+  return $profile_tag;
+}
+
 ?>
