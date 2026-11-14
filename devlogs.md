@@ -19,3 +19,8 @@ Everything made at the time of writing will probably change alot in the near fut
 the profile page created just for testing the auth required function and nothing else, the database was still in planning at the time of writing and the project is still using empty database with one account table for this test.
 Added the nav button to profile page because it has become a hurdle going back and forth the page.
 I've taken some styling from the other project to here because I like it and don't want to restyle it again.
+
+## 13/11/26
+### Added callable env function, removed the category button and corrected the save_prev_loc placement
+For consistency and that I don't want to declare the $env each time it used on different page.
+Also removed the category button on the home page for the moment being unused, and correcting the save_prev_loc placement that previously makes no effect when user try to visit
