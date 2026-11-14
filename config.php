@@ -1,18 +1,44 @@
 <?php
 declare(strict_types=1);
 if (session_status() !== PHP_SESSION_ACTIVE) {
-  $isHTTPS = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || ($_SERVER['SERVER_PORT'] ?? null) == 443;
+  $isHTTPS = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || ($_SERVER['SERVER_PORT'] ?? null) == 443 || (strtolower((string) ($_SERVER['HTTP_X_FORWARDED_PROTO'] ?? '')) === 'https');
   session_start([
+    'name' => 'TSR_SESSID',
     'use_strict_mode' => 1,
+    'use_only_cookies' => 1,
     'cookie_httponly' => true,
     'cookie_secure' => $isHTTPS,
     'cookie_samesite' => 'Lax',
+    'sid_length' => 48,
+    'sid_bits_per_character' => 6,
   ]);
 }
 header('X-Content-Type-Options: nosniff');
 header('X-Frame-Options: SAMEORIGIN');
 header('Referrer-Policy: strict-origin-when-cross-origin');
-// the .env loader and scoped database wrapper
+// the .env loader
+function tsr_env(?string $key = null, mixed $default = null): mixed {
+  static $env = null;
+  if ($env == null) {
+    $envFile = __DIR__ . '/.env';
+    $env = is_file($envFile) ? (parse_ini_file($envFile) ?: []) : [];
+  }
+  if ($key == null) {
+    return $env;
+  }
+  return $env[$key] ?? $default;
+}
+
+// auto detecting base path
+$detectedBase = trim((string) tsr_env('BASE_PATH', ''));
+if ($detectedBase !== '') {
+  $base_path = '/' . trim($detectedBase, '/');
+} else {
+  $script_path = str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME'] ?? '/index.php'));
+  $base_path = ($script_path === '/' || $script_path === '.') ? '' : rtrim($script_path, '/');
+}
+
+// scoped database wrapper
 final class DB {
   private static ?\mysqli $conn = null;
   public static function connect(): \mysqli {
@@ -20,13 +46,12 @@ final class DB {
       return self::$conn;
     }
     mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
-    $env = is_file(__DIR__ . '/.env') ? (parse_ini_file(__DIR__ . '/.env') ?: []) : [];
     try {
       self::$conn = new \mysqli(
-        $env['DB_HOST'] ?? 'localhost',
-        $env['DB_USER'] ?? 'root',
-        $env['DB_PASS'] ?? '',
-        $env['DB_NAME'] ?? 'tesserarius',
+        (string) tsr_env('DB_HOST', 'localhost'),
+        (string) tsr_env('DB_USER', 'root'),
+        (string) tsr_env('DB_PASS', ''),
+        (string) tsr_env('DB_NAME', 'tesserarius')
       );
       self::$conn->set_charset('utf8mb4');
       return self::$conn;
