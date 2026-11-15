@@ -15,7 +15,7 @@ $meta['title'] = 'Documentation | Tesserarius';
         Tesserarius Documentation
       </h1>
       <p class="text-zinc-300">
-        Welcome to the still a work in progress documentation of the Tesserarius, for detail about the <strong>[QED](https://github.com/Qwidio/QED)</strong> used as the baseline of this project please refer to <strong>[QED Documentation](https://github.com/Qwidio/QED/blob/main/documentation.md)</strong>
+        Welcome to the still a work in progress documentation of the Tesserarius, for detail about the <strong><a href="https://github.com/Qwidio/QED" target="_blank" rel="noopener noreferrer">QED</a></strong> used as the baseline of this project please refer to <strong><a href="https://github.com/Qwidio/QED/blob/main/documentation.md" target="_blank" rel="noopener noreferrer">QED Documentation</a></strong>
       </p>
     </div>
   </main>

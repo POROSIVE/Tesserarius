@@ -44,14 +44,14 @@ $meta['title'] = 'Login | Tesserarius';
   
   <div class="mx-auto w-[88%] flex flex-col">
     <label for="username">Username</label>
-    <input type="text" class="inptxt border-b border-gray-400" id="username" name="username" placeholder="Account username..." autocomplete="off" tabindex="1" required>
+    <input type="text" class="inptxt border-b border-gray-400" id="username" name="username" placeholder="Account username..." minlength="3" autocomplete="off" tabindex="1" required>
   </div>
   <div class="mx-auto w-[88%] flex flex-col">
     <label for="password">Password</label>
-    <input type="password" class="inptxt border-b border-gray-400" id="password" name="password" placeholder="Input the correct password..." minlenght="8" autocomplete="off" tabindex="2" required>
+    <input type="password" class="inptxt border-b border-gray-400" id="password" name="password" placeholder="Input the correct password..." minlength="8" autocomplete="off" tabindex="2" required>
   </div>
   <div class="mx-auto w-[88%] flex items-center gap-2">
-    <input type="checkbox" class="cursor-pointer" id="session_persisted" name="session_persisted" placeholder="Input the correct password..." minlenght="8" autocomplete="off" tabindex="3">
+    <input type="checkbox" class="cursor-pointer" id="session_persisted" name="session_persisted" placeholder="Input the correct password..." autocomplete="off" tabindex="3">
     <label for="session_persisted" class="cursor-pointer">Keep me signed in</label>
   </div>
   <div class="mx-auto w-[88%] flex flex-col">
@@ -59,7 +59,7 @@ $meta['title'] = 'Login | Tesserarius';
   </div>
   <div class="mx-auto mt-2 w-[88%] flex flex-col gap-1">
     <p class="text-center">Don't have an account? <a href="<?= e($base_path) ?>/auth/register" class="text-[var(--accent)] hover:text-[var(--text)] underline" tabindex="5">Register here</a></p>
-    <p class="text-center">Having problem logging in? <a href="<?= e($base_path) ?>/docs" class="text-[var(--accent)] hover:text-[var(--text)] underline" tabindex="5">Check documentation</a></p>
+    <p class="text-center">Having problem logging in? <a href="<?= e($base_path) ?>/docs" class="text-[var(--accent)] hover:text-[var(--text)] underline" tabindex="6">Check documentation</a></p>
   </div>
 </form>
 <div class="relative hidden w-[60vw] h-full md:block text-transparent z-[5]">.</div>
