@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 save_prev_loc('/profile');
-$profile_tag = auth_required();
+$profile_tag = SessionManager::auth_required();
 
 $meta['title'] = 'Profile | Tesserarius';
 ?>
