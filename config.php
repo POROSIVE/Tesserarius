@@ -138,6 +138,17 @@ function get_prev_loc(string $default = ""): string {
   return ltrim($loc, "/");
 }
 
+function get_client_ip(): string {
+  if (!empty($_SERVER["HTTP_X_FORWARDED_FOR"]) && filter_var($_SERVER["REMOTE_ADDR"] ?? "", FILTER_VALIDATE_IP)) {
+    $ip = trim(explode(",", (string) $_SERVER["HTTP_X_FORWARDED_FOR"])[0]);
+    if (filter_var($ip, FILTER_VALIDATE_IP)) {
+      return $ip;
+    }
+  }
+  $remote = $_SERVER["REMOTE_ADDR"] ?? "0.0.0.0";
+  return filter_var($remote, FILTER_VALIDATE_IP) ? $remote : "0.0.0.0";
+}
+
 function get_current_time(int $offsetSeconds = 0): string {
   return date("Y-m-d");
 }
@@ -156,7 +167,7 @@ function get_unix(?string $rawDate, bool $eod = false): int {
     "d-m-Y H:i:s" => false, "d-m-Y H:i" => false, "d/m/Y"       => true,  "d-m-Y"     => true,
   ];
   foreach ($formats as $format => $isDateOnly) {
-    $dt = \DateTimeImmutable::creteFromFormat("!" . $format, $val, $utc);
+    $dt = \DateTimeImmutable::createFromFormat("!" . $format, $val, $utc);
     if ($dt !== false & $dt->format($format) === $val) {
       return ($isDateOnly && $endOfDayIfDateOnly ? $dt->setTime(23, 59, 59) : $dt)->getTimestamp();
     }
@@ -193,8 +204,8 @@ final class SessionManager {
   public static function clearCookie(): void {
     global $base_path;
     $cookiePath = ($base_path !== "") ? $base_path . "/" : "/";
-    unset($_SESSION["profile_tag"], $_SESSION["_session_token"], $_SESSION["_session_verified_at"], $_SESSION["org_session_token"], $_SESSION["org_id"], $_SESSION["org_role"], $_SESSION["reset_password_required"]);
-    unset($_COOKIE["session_token"], $_COOKIE["_session_token"], $_COOKIE["_session_verified_at"]);
+    unset($_SESSION["profile_tag"], $_SESSION["_session_verified_at"], $_SESSION["org_session_token"], $_SESSION["org_id"], $_SESSION["org_role"], $_SESSION["reset_password_required"]);
+    unset($_COOKIE["session_token"], $_COOKIE["_session_verified_at"]);
     setcookie("session_token", "", [
       "expires"  => 1,
       "path"     => $cookiePath,
@@ -240,7 +251,7 @@ final class SessionManager {
         "token"   => "",
         "expires_at"    => "",
         "expires_unix"  => "",
-        "token"   => "Your account exceed maximum active sessions allowed(" . self::MAX_SESSIONS . ")",
+        "error"   => "Your account exceed maximum active sessions allowed(" . self::MAX_SESSIONS . ")",
       ];
     }
     $token      = bin2hex(random_bytes(32));
@@ -253,8 +264,8 @@ final class SessionManager {
       [
         $profile_tag,
         $token,
-        $ipAddress ?? "0.0.0.0",
         mb_substr(trim($osid) ?: "unknown", 0, 100),
+        $ipAddress ?? "0.0.0.0",
         mb_substr(trim($clientType) ?: "unknown", 0, 200),
         $sqlExpires,
         $sqlNow,
@@ -262,8 +273,8 @@ final class SessionManager {
     );
     if ($setCookie) {
       self::setCookie($token, $unixExpires);
-      $_SESSION["_session_token"]     = $token;
-      $_SESSION["_session_verified_at"]     = $unixNow;
+      $_SESSION["session_token"]        = $token;
+      $_SESSION["_session_verified_at"] = $unixNow;
     }
     return ["ok" => true, "token" => $token, "expires_at" => $sqlExpires, "expires_unix" => $unixExpires, "error" => null];
   }
@@ -271,7 +282,7 @@ final class SessionManager {
   // the web session, handling internally
   public static function webSessionDestroy(): void {
     $profileTag = $_SESSION["profile_tag"] ?? null;
-    $cookieToken = $_COOKIE["session_token"] ?? ($_SESSION["_session_token"] ?? null);
+    $cookieToken = $_COOKIE["session_token"] ?? ($_SESSION["session_token"] ?? null);
     if (!empty($cookieToken) && !empty($profileTag)) {
       DB::query("DELETE FROM session_logs WHERE session_token = ? AND profile_tag = ?", [(string) $cookieToken, (string) $profileTag]);
     }

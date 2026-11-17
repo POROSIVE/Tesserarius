@@ -10,4 +10,5 @@ $meta['title'] = 'Profile | Tesserarius';
 <div class="m-auto p-4 w-1/3 min-h-1/3 flex flex-col items-center justify-center bg-slate-500 rounded-xl">
   <h1 class="text-2xl">ULTRA SECRET PROFILE PAGE</h1>
   <p class="text-xl">for test currently, nothing here really</p>
+<a href="<?= e($base_path) ?>/auth/logout" class="text-xl hover:text-orange-400">Click here to logout</a>
 </div>
