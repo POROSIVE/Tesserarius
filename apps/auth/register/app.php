@@ -46,6 +46,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     "themes"  => "0",
   ];
   $eOwnSoft = json_encode($ownedSoftware, JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR);
+  $eOwnBadges = json_encode($ownedBadges, JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR);
   $ePref = json_encode($preferences, JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR);
   $autoApprove = strtolower((string) tsr_env("AUTO_APPROVE_USERS", "true")) !== "false";
   $approvalState = $autoApprove ? "approved" : "pending";
@@ -53,12 +54,10 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
   $hashedActivationToken = $autoApprove ? null : hash("sha256", $activationToken);
   $activationExpiration = $autoApprove ? null : date("Y-m-d H:i:s", time() + 3600);
   try {
-    DB::beginTrasaction();
-    DB::query("INSERT INTO account (profile_tag, username, password, email, approval_state, activation_token_hash, activation_expires) VALUES (?, ?, ?, ?, ?, ?, ?)",
-                [$newProfileTag, $username, $hashedPassword, $email, $approvalState, $hashedActivationToken, $activationExpiration]);
+    DB::beginTransaction();
+    DB::query("INSERT INTO account (profile_tag, username, password, email, approval_state, activation_token_hash, activation_expires) VALUES (?, ?, ?, ?, ?, ?, ?)", [$newProfileTag, $username, $hashedPassword, $email, $approvalState, $hashedActivationToken, $activationExpiration]);
     $account_id = DB::lastId();
-    DB::query("INSERT INTO profile (profile_tag, profile_name, profile_desc, profile_join, collection, badges, preferences) VALUES (?, ?, ?, ?, ?, ?, ?)",
-                [$newProfileTag, $username, "", $registeredDate, $ownedSoftware, $ownedBadges, $preferences]);
+    DB::query("INSERT INTO profile (profile_tag, profile_name, profile_desc, profile_join, collection, badges, preferences) VALUES (?, ?, ?, NOW(), ?, ?, ?)", [$newProfileTag, $username, "", $eOwnSoft, $eOwnBadges, $ePref]);
     DB::commit();
     if ($autoApprove) {
       msg_set("Account Registered! You Login immidiately");
@@ -90,10 +89,6 @@ $meta["title"] = "Register | Tesserarius";
   <div class="mx-auto w-[88%] flex flex-col">
     <label for="password">Password</label>
     <input type="password" class="inptxt border-b border-gray-400" id="password" name="password" placeholder="Input the correct password..." minlenght="8" autocomplete="off" tabindex="3" required>
-  </div>
-  <div class="mx-auto w-[88%] flex items-center gap-2">
-    <input type="checkbox" class="cursor-pointer" id="session_persisted" name="session_persisted" placeholder="Input the correct password..." autocomplete="off" tabindex="4">
-    <label for="session_persisted" class="cursor-pointer">Keep me signed in</label>
   </div>
   <div class="mx-auto w-[88%] flex flex-col">
     <button type="submit" class="p-2 text-lg font-bold bg-yellow-500 hover:bg-yellow-400 rounded-md cursor-pointer" tabindex="5">REGISTER</button>

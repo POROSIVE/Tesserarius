@@ -54,6 +54,7 @@ final class DB {
         (string) tsr_env("DB_NAME", "tesserarius")
       );
       self::$conn->set_charset("utf8mb4");
+      self::$conn->query("SET time_zone = \x27+00:00\x27");
       return self::$conn;
     } catch (\Throwable $e) {
       error_log("Failed db connection: " . $e->getMessage());

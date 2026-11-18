@@ -43,3 +43,24 @@ Replaced the barren session handling with a full SessionManager class adapted/in
 - Session creation & destruction (createSession & webSessionDestroy): Generates a 64-character hex token (random_bytes(32)), logs the session along with osid, client_type, logged_address, and 15-day expiration (SESSION_TTL) into session_logs, and deletes active user/org session rows from the database when logging out. <br>
 - Verification & auto-extend (webSessionVerify, extendsSession, & SessionManager::auth_required): Re-verifies the logged-in account (approval_state = 'approved') and active session token against the database every 60 seconds (REVERIFY_INTERVALS), restores sessions from $_COOKIE["session_token"] with session_regenerate_id(true) if the PHP session expired first, and automatically slides the expiration date forward when less than 7 days remain (SESSIONS_EXTEND_THRESHOLD). <br>
 I do Kept the old standalone auth_required() function at the very bottom temporarily just incase that the things just want to break in the most confusing way like the other time.
+
+## 18/11/26
+### Registration page, DB transaction helpers, and minor tweaks
+Created the registration page (apps/auth/register/app.php) and added the needed DB helpers in config.php so account and profile creation don't leave half-inserted rows if one of the queries failed.
+
+### Updated DB class in config.php
+Added a couple more static methods to the DB class to handle multi-table inserts properly:
+- `DB::lastId()` and `DB::affectedRows()` for grabbing the `insert_id` and `affected_rows` from the active connection. 
+- `DB::beginTransaction(),` `DB::commit(),` and `DB::rollback()` for wrapping related queries into a single database transaction so it rolls back cleanly if an error happens midway. 
+
+### Created registration page and placeholder activate page
+Made the `/auth/register` page using the same layout styling as the login page along with a client-side checkEmail() check hooked to alerter():
+- Validates email, username (regex check and length limit), and making password require minimum 8 characters, then checks the account table to make sure the username or email isn't already taken. 
+- Generates the password hash (password_hash), a unique profile_tag ($username . bin2hex(random_bytes(8))), join date (d-m-Y), and default JSON data for software collection, badges, and user preferences (private & themes). 
+- Added AUTO_APPROVE_USERS env check (defaults to true for local dev) — if enabled, sets approval_state directly to approved; otherwise sets it to pending and generates a SHA-256 activation_token_hash with a 1-hour expiration (activation_expires). 
+- Wraps both the account and profile table inserts inside a transaction block and redirects to the login page on success. 
+
+Also added an empty apps/auth/activate/app.php file (declare(strict_types=1);) as a placeholder for the account activation route later, adjusted ReverseTimer animation in script/alert.js from 4.5s to 4.4s so the border timing matches better, recompiled global.css, and updated README.md with the `AUTO_APPROVE_USERS=true` on the .env note and minor typo fixes.
+
+### fixing another stupid typo/self-inflicted-bugs
+I can't believed that I forgot to use the encoded array and check if the registration actually worked, it does now tho some feature like emailing is still left to be figured out
