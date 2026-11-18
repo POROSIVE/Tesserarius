@@ -61,9 +61,24 @@ final class DB {
       exit("Internal server error.");
     }
   }
-  // query helper
+  // query & it's things
   public static function query(string $sql, array $params = []): \mysqli_result|bool {
     return self::connect()->execute_query($sql, $params);
+  }
+  public static function lastId(): int|string {
+    return self::connect()->insert_id;
+  }
+  public static function affectedRows(): int|string {
+    return self::connect()->affected_rows;
+  }
+  public static function beginTransaction(): void {
+    self::connect()->begin_transaction();
+  }
+  public static function commit(): void {
+    self::connect()->commit();
+  }
+  public static function rollback(): void {
+    self::connect()->rollback();
   }
 }
 // escapes CSRF 

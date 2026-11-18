@@ -5,7 +5,7 @@ document.addEventListener("DOMContentLoaded", function() {
     setTimeout(() => {
       borderAnimate.style.animation = "none";
       void borderAnimate.offsetWidth;
-      borderAnimate.style.animation = "ReverseTimer 4.5s linear forwards";
+      borderAnimate.style.animation = "ReverseTimer 4.4s linear forwards";
     }, 500);
   }
 })

@@ -14,7 +14,7 @@ PHP, MYSQL & Tailwind(with NodeJS)
 ### Prerequisites
  On your target machine it is recommended to have:
  - PHP 8.2+, 
- - Apache HTTP Server (with mod_rewrite),
+ - Apache HTTP Server,
  - MySQL 8.0+ / MariaDB 10.6+ (mysqli)
  Or directly using latest XAMPP version that supported the newest PHP 8.2+
 
@@ -23,14 +23,16 @@ PHP, MYSQL & Tailwind(with NodeJS)
      ```bash
      git clone https://github.com/Qwidio/Tesserarius.git
       ```
- 2. move the downloaded/extracted repository (foldered) to the public directory of you apache server (`htdocs/` in case of XAMPP)
+ 2. move the downloaded/extracted repository (foldered) to the public directory of the apache server (`htdocs/` in case of XAMPP)
  3. Ensure Apache `mod_rewrite` is enabled and `AllowOverride All` is set for the installed repo directory.
  4. Copy `.env.example` to `.env` and configure your MySQL credentials:
       ```ini
       DB_HOST = "localhost"
       DB_USER = "root"
       DB_PASS = ""
-      DB_NAME = "Tesserarius"
+      DB_NAME = "database_name"
+      # make sure to set this to false in production
+      AUTO_APPROVE_USERS=true
       ```
  5. Install & run tailwind after clonning
       ```bash
