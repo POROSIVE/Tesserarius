@@ -32,7 +32,14 @@ PHP, MYSQL & Tailwind(with NodeJS)
       DB_PASS = ""
       DB_NAME = "database_name"
       # make sure to set this to false in production
-      AUTO_APPROVE_USERS=true
+      AUTO_APPROVE_USERS="true"
+      # smtp config for the mailer
+      SMTP_HOST = "smtp.gmail.com"
+      SMTP_PORT = "587"
+      SMTP_USER = "your_email@gmail.com"
+      SMTP_PASS = "your_app_password"
+      SMTP_FROM = "your_email@gmail.com"
+      SMTP_FROM_NAME = "Tesserarius"
       ```
  5. Install & run tailwind after clonning
       ```bash

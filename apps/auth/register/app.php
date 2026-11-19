@@ -1,5 +1,11 @@
 <?php
 declare(strict_types=1);
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception as MailException;
+require_once __DIR__ . "/../../../src/PHPMailer/Exception.php";
+require_once __DIR__ . "/../../../src/PHPMailer/PHPMailer.php";
+require_once __DIR__ . "/../../../src/PHPMailer/SMTP.php";
+
 if (isset($_SESSION["profile_tag"])) {
   redir_loc("/");
 }
@@ -58,9 +64,33 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     DB::query("INSERT INTO account (profile_tag, username, password, email, approval_state, activation_token_hash, activation_expires) VALUES (?, ?, ?, ?, ?, ?, ?)", [$newProfileTag, $username, $hashedPassword, $email, $approvalState, $hashedActivationToken, $activationExpiration]);
     $account_id = DB::lastId();
     DB::query("INSERT INTO profile (profile_tag, profile_name, profile_desc, profile_join, collection, badges, preferences) VALUES (?, ?, ?, NOW(), ?, ?, ?)", [$newProfileTag, $username, "", $eOwnSoft, $eOwnBadges, $ePref]);
+    if (!$autoApprove) {
+      $isHTTPS = (!empty($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] !== "off") || ($_SERVER["SERVER_PORT"] ?? null) == 443 || (strtolower((string) ($_SERVER["HTTP_X_FORWARDED_PROTO"] ?? "")) === "https");
+      $scheme = $isHTTPS ? "https" : "http";
+      $host = $_SERVER["HTTPS_HOST"] ?? "localhost";
+      $activationUrl = $scheme . "://" . $host . $base_path . "/auth/activate?id=" . $account_id . "&token=" . urlencode($activationToken);
+      $mail = new PHPMailer(true);
+      $mail->isSMTP();
+      $mail->Host     = (string) tsr_env("SMTP_HOST", "smtp.example.com");
+      $mail->SMTPAuth = true;
+      $mail->Username = (string) tsr_env("SMTP_USER", "");
+      $mail->Password = (string) tsr_env("SMTP_PASS", "");
+      $mail->Port     = (string) tsr_env("SMTP_PORT", 587);
+      $mail->SMTPSecure = ($mail->Port === 465) ? PHPMailer::ENCRYPTION_SMTPS : PHPMailer::ENCRYPTION_STARTTLS;
+      $mail->Charset  = "UTF-8";
+      $mail->setFrom((string) tsr_env("SMTP_FROM", (string) tsr_env("SMTP_USER", "no-reply@localhost")), (string) tsr_env("SMTP_FROM_NAME", "Tesserarius"));
+      $mail->addAddress($email, $username);
+      $mail->isHtml(true);
+      $mail->Subject  = "Activate your account Tesserarius Account"; 
+      $mail->Body     = "Hello <b>" . e($username) . "</b>,<br><br>Click the link below to activate your account (valid for 1 hour):<br><a href='" . e($activationUrl) . "'>Activate Account</a>";
+      $mail->AltBody  = "Hello " . $username . ",\n\nOpen this link to activate your account (valid for 1 hour):\n" . $activationUrl;
+      $mail->send();
+    }
     DB::commit();
     if ($autoApprove) {
       msg_set("Account Registered! You Login immidiately");
+    } else {
+      msg_set("Account created! Please check the your email to activate it");
     }
     redir_loc("auth/login");
   } catch (\Throwable $e) {
@@ -76,7 +106,7 @@ $meta["title"] = "Register | Tesserarius";
 ?>
 <form class="m-auto px-6 py-3 min-w-[400px] w-[40vw] h-full portrait:h-max flex flex-col items-center justify-center gap-2 bg-slate-600 portrait:rounded-md z-[5]" action="<?= e($base_path) ?>/auth/register" method="post" onsubmit="return checkEmail()">
   <?= csrf_field() ?>
-  <h1 class="mx-auto text-center text-xl font-extrabold">REGISTER</h1>
+  <h1 class="mx-auto text-center text-xl font-extrabold">REGISTER <?= $base_path; ?></h1>
   
   <div class="mx-auto w-[88%] flex flex-col">
     <label for="email">Email</label>
