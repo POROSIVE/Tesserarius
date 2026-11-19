@@ -6,10 +6,9 @@ if (!$id || $token === "") {
   msg_set("Invalid activation link");
   redir_loc("/");
 }
-$hashedToken = hash("sha256", $token);
 $user = DB::query(
     "SELECT id, approval_state, activation_expires FROM account WHERE id = ? AND activation_token_hash = ? LIMIT 1",
-    [$id, $hashedToken]
+    [(int) $id, $token]
 )->fetch_assoc();
 if (!$user) {
     msg_set("Account is already activated or token is invalid");
