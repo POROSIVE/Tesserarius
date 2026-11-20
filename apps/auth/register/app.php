@@ -50,6 +50,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
   $preferences = [
     "private"  => false, 
     "themes"  => "0",
+    "showcased"  => "",
+    "allow_invites"  => false,
   ];
   $eOwnSoft = json_encode($ownedSoftware, JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR);
   $eOwnBadges = json_encode($ownedBadges, JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR);
