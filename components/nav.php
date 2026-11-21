@@ -19,6 +19,10 @@ if (!in_array($activeSection, $noNav)):
         <a href="<?= e($base_path) ?>/profile" class="link-cover">.</a>
     </div>
     <div class="relative px-[10px] py-2 flex flex-col items-center justify-center rounded-[5px] hover:bg-white/15">
+        <h2 class="text-lg text-center font-bold <?= $activeSection === 'settings' ? 'text-[rgb(255,164,61)]' : 'text-white' ?>">Settings</h2>
+        <a href="<?= e($base_path) ?>/settings" class="link-cover">.</a>
+    </div>
+    <div class="relative px-[10px] py-2 flex flex-col items-center justify-center rounded-[5px] hover:bg-white/15">
         <h2 class="text-lg text-center font-bold <?= $activeSection === 'docs' ? 'text-[rgb(255,164,61)]' : 'text-white' ?>">docs</h2>
         <a href="<?= e($base_path) ?>/docs" class="link-cover">.</a>
     </div>
